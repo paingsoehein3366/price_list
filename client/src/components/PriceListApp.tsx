@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
 import { config } from "../config/config";
 import LoadingApp from "./LoadingApp";
@@ -17,7 +17,6 @@ const PriceListApp = () => {
     const Style = {
         minWidth: 300,
         minHeight: 30,
-        padding: 10,
         margin: 10,
     };
     const lineStyle = {
@@ -85,12 +84,12 @@ const PriceListApp = () => {
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <h1 style={{ color: "#1876d2" }}>Price List</h1>
-                <input value={name.name} onChange={(evt) => setName({ ...name, name: evt.target.value })} style={Style} type="text" placeholder="Name" />
-                <input value={price.price} onChange={(evt) => setPrice({ ...price, price: evt.target.value })} style={Style} type="number" placeholder="Price" />
-                <input value={date.date} onChange={(evt) => setDate({ ...date, date: evt.target.value })} style={Style} type="date" />
-                <button
+                <TextField value={name.name} onChange={(evt) => setName({ ...name, name: evt.target.value })} style={Style} type="text" placeholder="Name" />
+                <TextField value={price.price} onChange={(evt) => setPrice({ ...price, price: evt.target.value })} style={Style} type="number" placeholder="Price" />
+                <TextField value={date.date} onChange={(evt) => setDate({ ...date, date: evt.target.value })} style={Style} type="date" />
+                <Button
                     style={{
-                        minWidth: 325,
+                        minWidth: 300,
                         minHeight: 40,
                         background: "#1876d2",
                         border: "1px solid #1876d2",
@@ -98,7 +97,7 @@ const PriceListApp = () => {
                         color: "#ffffff"
                     }}
                     onClick={addFunction}
-                >Add</button>
+                >Add</Button>
             </div>
             <div style={lineStyle}></div>
             <div>
@@ -116,20 +115,16 @@ const PriceListApp = () => {
             <div style={lineStyle}></div>
             <div>
                 <h2>You need data to search</h2>
-                <div style={{ marginTop: 10, display: "flex" }}>
-                    <input
+                <div style={{ marginTop: 10, display: "flex", alignItems: "center" }}>
+                    <TextField
                         onChange={(evt) => setSearch({ search: evt.target.value })}
                         style={{
                             minWidth: 200,
                             minHeight: 30,
-                            padding: 10,
-                            borderTopLeftRadius: "10px",
-                            borderBottomLeftRadius: "10px",
-                            border: "1px solid"
                         }} type="date" />
-                    <input
+                    <TextField
                         onClick={submitFunction}
-                        style={{ color: "#1876d2", minHeight: 52, borderTopRightRadius: "10px", borderBottomRightRadius: "10px", border: "1px solid" }} type="submit"
+                        sx={{ bgcolor: "skyblue" }} type="submit"
                     />
                 </div>
                 <div>
