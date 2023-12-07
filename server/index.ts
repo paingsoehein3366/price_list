@@ -50,7 +50,7 @@ app.post("/login", async (req, res) => {
     const accessToken = jwt.sign(checkEmailRows, config.jwtSecret as string, { expiresIn: "1h" });
     if (!accessToken) return res.send(403);
     const dataFromUserId = checkEmail.rows.map((item) => item.id);
-    res.send({ accessToken, dataFromUserId });
+    res.send({ accessToken });
 });
 
 app.get("/", (req, res) => {
