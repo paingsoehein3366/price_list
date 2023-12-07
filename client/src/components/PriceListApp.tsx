@@ -1,7 +1,12 @@
-import { Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useState } from "react";
 import { config } from "../config/config";
 import LoadingApp from "./LoadingApp";
+import SearchIcon from '@mui/icons-material/Search';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link } from "react-router-dom";
+import MoneyRoundedIcon from '@mui/icons-material/MoneyRounded';
+import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 
 const PriceListApp = () => {
     const [name, setName] = useState({ name: "" });
@@ -13,6 +18,9 @@ const PriceListApp = () => {
     const [open, setOpen] = useState(false);
     const [removeDialog, setRemoveDialog] = useState(false);
     const [removeId, setRemoveId] = useState({ id: 0 });
+
+    const accessToken = localStorage.getItem("accessToken");
+    console.log("AccessToken: ", accessToken);
 
     const Style = {
         minWidth: 300,
@@ -27,6 +35,7 @@ const PriceListApp = () => {
     };
     // Add Function
     const addFunction = async () => {
+        if (!accessToken) return alert("You need to login...")
         if (!name.name) {
             return alert("No name");
         } else if (!price.price) {
@@ -51,7 +60,7 @@ const PriceListApp = () => {
             return;
         }
     };
-    const submitFunction = async () => {
+    const searchFunction = async () => {
         if (!search.search) return alert("No search");
         setOpen(true);
         const response = await fetch(`${config.apiBaseUrl}/search`, {
@@ -76,28 +85,29 @@ const PriceListApp = () => {
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ removeId: removeId.id })
         });
-        submitFunction();
+        searchFunction();
         setRemoveDialog(false);
-    }
+    };
 
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <h1 style={{ color: "#1876d2" }}>Price List</h1>
-                <TextField value={name.name} onChange={(evt) => setName({ ...name, name: evt.target.value })} style={Style} type="text" placeholder="Name" />
+                <Box sx={{ display: "flex", width: 300, justifyContent: "space-between", marginY: 2 }}>
+                    <Box>
+                        <ShoppingCartRoundedIcon sx={{ fontSize: 35, color: "#1876d2", cursor: "pointer" }} />
+                        <MoneyRoundedIcon sx={{ fontSize: 40, color: "#c2c7c6", cursor: "pointer" }} />
+                    </Box>
+                    <Link to="/login">
+                        <AccountCircleIcon
+                            sx={{ fontSize: 40, color: "#1876d2", cursor: "pointer" }}
+                            onClick={() => localStorage.removeItem("accessToken")}
+                        />
+                    </Link>
+                </Box>
+                <TextField value={name.name} onChange={(evt) => setName({ ...name, name: evt.target.value })} style={Style} type="text" placeholder="Type Name" />
                 <TextField value={price.price} onChange={(evt) => setPrice({ ...price, price: evt.target.value })} style={Style} type="number" placeholder="Price" />
-                <TextField value={date.date} onChange={(evt) => setDate({ ...date, date: evt.target.value })} style={Style} type="date" />
-                <Button
-                    style={{
-                        minWidth: 300,
-                        minHeight: 40,
-                        background: "#1876d2",
-                        border: "1px solid #1876d2",
-                        borderRadius: 5,
-                        color: "#ffffff"
-                    }}
-                    onClick={addFunction}
-                >Add</Button>
+                <TextField value={date.date} onChange={(evt) => setDate({ ...date, date: evt.target.value })} style={Style} type="date" placeholder="Date" />
+                <Button variant="contained" onClick={addFunction}>Add</Button>
             </div>
             <div style={lineStyle}></div>
             <div>
@@ -105,7 +115,7 @@ const PriceListApp = () => {
                 {responseData.map(item => {
                     return (
                         <div>
-                            <p>Name: {item.name}</p>
+                            <p>Type Name: {item.name}</p>
                             <p>Price: {item.price}</p>
                             <p>Date: {item.date}</p>
                         </div>
@@ -115,25 +125,23 @@ const PriceListApp = () => {
             <div style={lineStyle}></div>
             <div>
                 <h2>You need data to search</h2>
-                <div style={{ marginTop: 10, display: "flex", alignItems: "center" }}>
+                <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <TextField
+                        placeholder="Date"
                         onChange={(evt) => setSearch({ search: evt.target.value })}
                         style={{
                             minWidth: 200,
                             minHeight: 30,
                         }} type="date" />
-                    <TextField
-                        onClick={submitFunction}
-                        sx={{ bgcolor: "skyblue" }} type="submit"
-                    />
+                    <Button onClick={searchFunction} variant="outlined" sx={{ minHeight: 55, borderRadious: 10 }}><SearchIcon /></Button>
                 </div>
-                <div>
+                <div style={{ marginTop: "10px" }}>
                     {databaseFromSearch.map(item => {
                         return (
                             <div key={item.id}>
                                 <div style={{ display: "flex", background: "#2acfcd", margin: 5, color: "", borderRadius: 10 }}>
                                     <div style={{ margin: 10, }}>
-                                        <h3>Name</h3>
+                                        <h3>Type Name</h3>
                                         <p>{item.name}</p>
                                     </div>
                                     <div style={{ margin: 10 }}>
@@ -145,20 +153,15 @@ const PriceListApp = () => {
                                         <p>{item.date}</p>
                                     </div>
                                 </div>
-                                <button
+                                <Button
                                     onClick={() => {
                                         setRemoveDialog(true);
                                         setRemoveId({ id: item.id })
                                     }}
-                                    style={{
-                                        padding: 12,
-                                        background: "red",
-                                        border: "1px solid red",
-                                        color: "#ffffff",
-                                        borderRadius: 5,
-                                        marginBottom: 15,
-                                    }}
-                                >Remove</button>
+                                    style={{ marginBottom: 15 }}
+                                    variant="contained"
+                                    color="error"
+                                >Remove</Button>
                             </div>
                         )
                     })}
