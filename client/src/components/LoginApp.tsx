@@ -3,10 +3,12 @@ import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { config } from "../config/config";
+import LoadingApp from "./LoadingApp";
 
 const LoginApp = () => {
     const [userName, setUserName] = useState({ userName: "" });
     const [password, setPassword] = useState({ password: "" });
+    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const accessToken = localStorage.getItem("accessToken");
 
@@ -16,6 +18,7 @@ const LoginApp = () => {
         } else if (!password.password) {
             return alert("!Please Enter password")
         };
+        setOpen(true);
         const response = await fetch(`${config.apiBaseUrl}/login`, {
             method: "POST",
             headers: {
@@ -28,6 +31,7 @@ const LoginApp = () => {
             const responseData = await response.json();
             const accessToken = responseData.accessToken;
             localStorage.setItem("accessToken", accessToken);
+            setOpen(false);
             navigate("/");
         } else {
             return alert("Check! userName and password.");
@@ -61,6 +65,7 @@ const LoginApp = () => {
                 </Box>
                 <Box></Box>
             </Box>
+            <LoadingApp open={open} />
         </Box>
     )
 };
