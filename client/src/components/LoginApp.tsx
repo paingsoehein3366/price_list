@@ -34,6 +34,9 @@ const LoginApp = () => {
             setOpen(false);
             navigate("/");
         } else {
+            setOpen(false);
+            setUserName({ userName: "" });
+            setPassword({ password: "" });
             return alert("Check! userName and password.");
         }
     };
